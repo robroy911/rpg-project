@@ -7,8 +7,12 @@ import random
 monster name (key), monster level, monster hp
 '''
 
+try:
+	playerProfile = pickle.load( open( "character.p", "rb" ))
 
-playerProfile = pickle.load( open( "character.p", "rb" ))
+except:
+	playerProfile = {}
+
 monsters = pickle.load( open( "monsters.p", "rb" ))
 
 
@@ -45,12 +49,13 @@ def rollStats(playerName):
 	level = 1
 	gold = 1
 	hp = strg + dext + intel + wisd + charm / 2
+	xp = 0
 	
 	print(name+', here are your stats: Strength:',strg,'Dexterity:',dext,'Intelligence:',intel,'Wisdom:',wisd,'Charisma:',charm)
 	
 	playerClass = input('Now that you have seen your stats, what type of adventurer are you: [warrior, rogue, mage]')
 	
-	playerProfile[name] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm
+	playerProfile[name] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp
 	
 	mainMenu(playerName)
 
@@ -108,6 +113,7 @@ def loadStats(playerName):
 	intel = playerProfile[x][6] 
 	wisd = playerProfile[x][7] 
 	charm = playerProfile[x][8]
+	xp = playerProfile[x][9]
 	
 	#print('Name:',x,'Class:',playerClass,'Level:',level,'HP:',hp,'Strength:',strg,'Dexterity:',dext,'Intel:',intel,'Wisdom:',wisd,'Charisma:',charm)
 	
@@ -126,9 +132,11 @@ def showStats(playerName):
 	dext = playerProfile[x][5] 
 	intel = playerProfile[x][6] 
 	wisd = playerProfile[x][7] 
-	charm = playerProfile[x][8] 
+	charm = playerProfile[x][8]
+	xp = playerProfile[x][9]
+	 
 	
-	print('Name:',x,'\nClass:',playerClass,'\nLevel:',level,'\nHP:',hp,'\nGold:',gold,'\nStrength:',strg,'\nDexterity:',dext,'\nIntel:',intel,'\nWisdom:',wisd,'\nCharisma:',charm)
+	print('Name:',x,'\nClass:',playerClass,'\nLevel:',level,'\nXP:',xp,'\nHP:',hp,'\nGold:',gold,'\nStrength:',strg,'\nDexterity:',dext,'\nIntel:',intel,'\nWisdom:',wisd,'\nCharisma:',charm)
 	
 	#print (playerProfile[x][0]) #lists items from playerProfile
 	mainMenu(x)		
@@ -206,10 +214,8 @@ def createMonster():
 	monsters[m]=[mLevel,mHP]
 	
 
-
-
-
-def enterTavern(playerName):
+	
+def fightRats(playerName):
 	
 	x = playerName
 	
@@ -222,6 +228,72 @@ def enterTavern(playerName):
 	intel = playerProfile[x][6] 
 	wisd = playerProfile[x][7] 
 	charm = playerProfile[x][8]
+	xp = playerProfile[x][9]		
+	
+	print('"Where are all ths customers," you ask.  The bar keep softens his tone a bit and says," All \
+	gone due to this rat infestation!  Those little monsters are eating me out of house and home!  I can''t\
+	make ale or bread without grain and nobody wants stew without some hearty bread along with it!')
+		
+	s = input('Do you offer your services in echange for a small fee? (y/n) ')
+		
+	if s == 'y' or x == 'Y':
+		print('I will help rid your tavern of Rats!')
+		print('Excellent!  Some of those jokers are pretty big!  Take this old sword some drunk fool left \
+		as payment for his tab.  If you make it out I might have a gold piece for you as well.')
+		
+		m = 'Rat'
+		
+		rats = monsters[m][1]
+		
+		numRats = random.randint(1,3)
+		rats = rats * numRats
+		ratsXP = rats * numRats
+		playerHP = playerProfile[x][2]
+		
+		playerDamage = random.randint(1,6)
+		ratsDamage = random.randint(1,2)
+		
+		
+		print('You head past the bar and straight to the cellar door.  Opening the door reveals the foul stench of overripe \
+		 yeast mixed with the smell of vermin.  You look down at the sword in your hand.  It''s heavy, spotted with rust,\
+		and very dull, but should do the job.  As you head down the stairs, you light a candle to see by and are stunned to see \
+		',numRats,'very large rats digging though sacks of grain and bags of rotten fruit.  One of them stops and sniffs the air and growls\
+		in a way no rodent you have ever seen before growls.  In unison they turn and head in your direction.')
+		
+		#figure out battle part
+
+
+		while True:
+				
+				if rats < 0:
+					print('The rats have been exterminated.')
+					
+					del playerProfile[x]
+					xp = xp + ratsXP
+					playerProfile[x] = playerClass, level, round(playerHP), gold, strg, dext, intel, wisd, charm, xp
+					
+					break
+				elif playerHP < 0:
+					print('You have been killed.')
+					break
+
+				else:
+					rats = rats - playerDamage
+					print('You did',playerDamage,'damage!')
+					
+					playerHP = playerHP - ratsDamage
+					print('Rats did',ratsDamage,'damage!')
+				
+		
+	else:
+		print('That is tough luck! cya!')
+	
+
+
+
+def enterTavern(playerName):
+	
+	x = playerName
 	
 	print('You walk throuh the door of the Shady Oak tavern and notice that the place is \
 almost empty.  The fire in the hearth has mostly gone out and the only sources of light \
@@ -250,18 +322,8 @@ with a sneer.  "Where the hell did you come from?"  Can''t you tell we are close
 	the hell out and don''t come back unil you have more sense')
 		
 	elif act1 == 3:
-		print('"Where are all ths customers," you ask.  The bar keep softens his tone a bit and says," All \
-	gone due to this rat infestation!  Those little monsters are eating me out of house and home!  I can''t\
-	make ale or bread without grain and nobody wants stew without some hearty bread along with it!')
-		
-		x = input('Do you offer your services in echange for a small fee? (y/n) ')
-		
-		if x == 'y' or x == 'Y':
-			print('I will help rid your tavern of Rats!')
-		else:
-			print('That is tough luck! cya!')
-				
-	
+		fightRats(x)
+
 	
 	elif act1 == 4:
 		mainMenu(playerName)
