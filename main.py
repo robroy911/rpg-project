@@ -2,10 +2,12 @@ import pickle
 import random
 
 
-#monsters = {} 
+
 '''
 monster name (key), monster level, monster hp
 '''
+
+#load character and monster dictionaries
 
 try:
 	playerProfile = pickle.load( open( "character.p", "rb" ))
@@ -13,18 +15,22 @@ try:
 except:
 	playerProfile = {}
 
-monsters = pickle.load( open( "monsters.p", "rb" ))
+try:
+	monsters = pickle.load( open( "monsters.p", "rb" ))
 
+except:
+	monsters = {}
+	 
 
 #Player profile dictionary order: playerName (key), playerClass, level, hp, gold, strg, dext, intel, wisd, charm
 
 #todo: Hit points calculation --done //need to figure out leveling and adding hp for new level.
 #todo: level claculation
-#todo: gold and reward calculation
-#todo: priest heal module / visit a healer module / healing potions
+#todo: gold and reward calculation --added gold to tavern rats
+#todo: priest heal module / visit a healer module / healing potions - Heah check before adventures. Suggest seeing a healer before adventure.
 #idea. Adding an adventure module system.  Can't play a module until level is reached.
 #idea. Module replayability.  Create random monster generator module.
-#idea. Game could support multiple users.  Into screen asks if new player or not. If nnot, load player from list of names ... password protect?
+#idea. Game could support multiple users.  Into screen asks if new player or not. If nnot, load player from list of names // done.
 
 
 '''
@@ -50,12 +56,13 @@ def rollStats(playerName):
 	gold = 1
 	hp = strg + dext + intel + wisd + charm / 2
 	xp = 0
+	currentHP = strg + dext + intel + wisd + charm / 2
 	
 	print(name+', here are your stats: Strength:',strg,'Dexterity:',dext,'Intelligence:',intel,'Wisdom:',wisd,'Charisma:',charm)
 	
 	playerClass = input('Now that you have seen your stats, what type of adventurer are you: [warrior, rogue, mage]')
 	
-	playerProfile[name] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp
+	playerProfile[name] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp, round(currentHP)
 	
 	mainMenu(playerName)
 
@@ -114,6 +121,7 @@ def loadStats(playerName):
 	wisd = playerProfile[x][7] 
 	charm = playerProfile[x][8]
 	xp = playerProfile[x][9]
+	currentHP = playerProfile[x][10]
 	
 	#print('Name:',x,'Class:',playerClass,'Level:',level,'HP:',hp,'Strength:',strg,'Dexterity:',dext,'Intel:',intel,'Wisdom:',wisd,'Charisma:',charm)
 	
@@ -134,9 +142,10 @@ def showStats(playerName):
 	wisd = playerProfile[x][7] 
 	charm = playerProfile[x][8]
 	xp = playerProfile[x][9]
+	currentHP = playerProfile[x][10]	
 	 
 	
-	print('Name:',x,'\nClass:',playerClass,'\nLevel:',level,'\nXP:',xp,'\nHP:',hp,'\nGold:',gold,'\nStrength:',strg,'\nDexterity:',dext,'\nIntel:',intel,'\nWisdom:',wisd,'\nCharisma:',charm)
+	print('Name:',x,'\nClass:',playerClass,'\nLevel:',level,'\nXP:',xp,'\nHP:',hp,'\nCurrent hp:',currentHP,'\nGold:',gold,'\nStrength:',strg,'\nDexterity:',dext,'\nIntel:',intel,'\nWisdom:',wisd,'\nCharisma:',charm)
 	
 	#print (playerProfile[x][0]) #lists items from playerProfile
 	mainMenu(x)		
@@ -228,7 +237,8 @@ def fightRats(playerName):
 	intel = playerProfile[x][6] 
 	wisd = playerProfile[x][7] 
 	charm = playerProfile[x][8]
-	xp = playerProfile[x][9]		
+	xp = playerProfile[x][9]
+	currentHP = playerProfile[x][10]			
 	
 	print('"Where are all ths customers," you ask.  The bar keep softens his tone a bit and says," All \
 	gone due to this rat infestation!  Those little monsters are eating me out of house and home!  I can''t\
@@ -266,11 +276,15 @@ def fightRats(playerName):
 		while True:
 				
 				if rats < 0:
-					print('The rats have been exterminated.')
-					
+					print('The rats have been exterminated!')
+					rewardGold = random.randint(1,3)
+					print('You leave the basement and report your sucess to the owner.  He is over joyed and offers you \
+					',rewardGold,'gold for your work.')
+										
 					del playerProfile[x]
+					gold = gold + rewardGold
 					xp = xp + ratsXP
-					playerProfile[x] = playerClass, level, round(playerHP), gold, strg, dext, intel, wisd, charm, xp
+					playerProfile[x] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp, round(playerHP)
 					
 					break
 				elif playerHP < 0:
