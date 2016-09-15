@@ -1,13 +1,22 @@
 import pickle
 import random
+import os
 
+
+#create character and monster files i they don;t already exist.
+
+if not os.path.exists('character.p'):
+    open('character.p', 'w').close()
+    
+if not os.path.exists('monster.p'):
+    open('monster.p', 'w').close()    
 
 
 '''
 monster name (key), monster level, monster hp
 '''
 
-#load character and monster dictionaries
+#load character and monster dictionaries or create new ones.
 
 try:
 	playerProfile = pickle.load( open( "character.p", "rb" ))
@@ -106,7 +115,7 @@ def loadPlayer():
 		else:
 			'Invalid Character.  Returning to start ...'
 
-
+'''
 def loadStats(playerName):
 	x = playerName
 	
@@ -126,7 +135,7 @@ def loadStats(playerName):
 	
 	#print (playerProfile[x][0]) #lists items from playerProfile
 	#mainMenu(x)		
-
+'''
 
 def showStats(playerName):
 	x = playerName
@@ -375,7 +384,7 @@ def visitHealer(playerName):
 		if healChoice == 'y' or healChoice=='Y':
 			print('begin healing')
 			gold = gold -1
-			playerHP = random.randint(playerHP,hp)
+			playerHP = hp
 			
 			del playerProfile[x]
 			
@@ -391,7 +400,9 @@ def visitHealer(playerName):
 		print('I am sorry, but you don''t have enough gold to pay the healer.')
 		mainMenu(x)		
 
-						
+
+
+					
 def mainMenu(playerName):
 
 	playerName = playerName
