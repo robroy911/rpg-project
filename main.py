@@ -22,15 +22,14 @@ except:
 	monsters = {}
 	 
 
-#Player profile dictionary order: playerName (key), playerClass, level, hp, gold, strg, dext, intel, wisd, charm
-
-#todo: Hit points calculation --done //need to figure out leveling and adding hp for new level.
-#todo: level claculation
+#todo: Hit points calculation --done
+#todo: visit a healer module --done. 
+#idea. Game could support multiple users.  Into screen asks if new player or not. If nnot, load player from list of names // done.
+#todo: need to figure out leveling and adding hp for new level.
 #todo: gold and reward calculation --added gold to tavern rats
-#todo: priest heal module / visit a healer module / healing potions - Heah check before adventures. Suggest seeing a healer before adventure.
 #idea. Adding an adventure module system.  Can't play a module until level is reached.
 #idea. Module replayability.  Create random monster generator module.
-#idea. Game could support multiple users.  Into screen asks if new player or not. If nnot, load player from list of names // done.
+
 
 
 '''
@@ -255,13 +254,13 @@ def fightRats(playerName):
 		
 		rats = monsters[m][1]
 		
-		numRats = random.randint(1,3)
+		numRats = random.randint(1,5)
 		rats = rats * numRats
 		ratsXP = rats * numRats
 		playerHP = playerProfile[x][2]
 		
 		playerDamage = random.randint(1,6)
-		ratsDamage = random.randint(1,2)
+		ratsDamage = random.randint(1,3)
 		
 		
 		print('You head past the bar and straight to the cellar door.  Opening the door reveals the foul stench of overripe \
@@ -289,6 +288,10 @@ def fightRats(playerName):
 					break
 				elif playerHP < 0:
 					print('You have been killed.')
+					
+					xp = xp - ratsXP
+					del playerProfile[x]
+					playerProfile[x] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp, round(playerHP)
 					break
 
 				else:
@@ -347,7 +350,46 @@ with a sneer.  "Where the hell did you come from?"  Can''t you tell we are close
 		and throws a punch at you.'	)		
 	
 	
-
+def visitHealer(playerName):
+	
+	x = playerName
+	
+	playerClass = playerProfile[x][0] 
+	level = playerProfile[x][1] 
+	hp = playerProfile[x][2]
+	gold = playerProfile[x][3] 
+	strg = playerProfile[x][4]  
+	dext = playerProfile[x][5] 
+	intel = playerProfile[x][6] 
+	wisd = playerProfile[x][7] 
+	charm = playerProfile[x][8]
+	xp = playerProfile[x][9]
+	currentHP = playerProfile[x][10]	
+	
+	playerHP = playerProfile[x][2]
+	
+	if gold >0:
+	
+		healChoice = input('Healing costs 1 gold ... are you sure? (y/n)')
+	
+		if healChoice == 'y' or healChoice=='Y':
+			print('begin healing')
+			gold = gold -1
+			playerHP = random.randint(playerHP,hp)
+			
+			del playerProfile[x]
+			
+			playerProfile[x] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp, round(playerHP)
+					
+			
+		else:
+			print('Sorry, come back when you are a little less cheap!')
+			mainMenu(x)
+			
+	else:
+		
+		print('I am sorry, but you don''t have enough gold to pay the healer.')
+		mainMenu(x)		
 
 						
 def mainMenu(playerName):
@@ -359,14 +401,15 @@ def mainMenu(playerName):
 	print('[1] Visit local tavern.')
 	print('[2] Hunt in the forrest.')
 	print('[3] Check for bounties.')
-	print('[4] Player Stats.')
-	print('[5] Save game.')
-	print('[6] Game Admin')
-	print('[7] Exit game.')
+	print('[4] Visit a healer or get resurrected.')
+	print('[5] Player Stats.')
+	print('[6] Save game.')
+	print('[7] Game Admin')
+	print('[8] Exit game.')
 			
 	print('--------------------------')	
 	
-	actionChoice = input('What would you like to do today? (1-5)')
+	actionChoice = input('What would you like to do today? (1-8)')
 	
 	actionChoice = int(actionChoice)
 	
@@ -382,20 +425,26 @@ def mainMenu(playerName):
 	elif actionChoice == 3:
 		print('You ask around about bounties')
 		mainMenu(playerName)
-		
+	
 	elif actionChoice == 4:
+		#print('You visit a healer.')
+		visitHealer(playerName)
+		
+	elif actionChoice == 5:
 		showStats(playerName)
 		mainMenu(playerName)
 	
-	elif actionChoice == 5:
+	elif actionChoice == 6:
 		pickle.dump( playerProfile, open( "character.p","wb") )	
 		print('Saving adventurer data.')
 		mainMenu(playerName)
 		
-	elif actionChoice == 6:
+	elif actionChoice == 7:
 		gameAdmin(playerName)	
 	
-	elif actionChoice == 7:
+	elif actionChoice == 8:
+		pickle.dump( playerProfile, open( "character.p","wb") )	
+		print('Saving adventurer data.')
 		exit()
 		
 	else:
@@ -415,6 +464,7 @@ visit a healer and get resurrected ... for a small fee of course.  You will be a
 		newPlayer()
 		
 	else:
+		
 		loadPlayer()
 		
 
