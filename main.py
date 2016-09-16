@@ -8,9 +8,8 @@ import os
 if not os.path.exists('character.p'):
     open('character.p', 'w').close()
     
-if not os.path.exists('monster.p'):
-    open('monster.p', 'w').close()    
-
+if not os.path.exists('monsters.p'):
+    open('monsters.p', 'w').close()    
 
 '''
 monster name (key), monster level, monster hp
@@ -19,6 +18,7 @@ monster name (key), monster level, monster hp
 #load character and monster dictionaries or create new ones.
 
 try:
+
 	playerProfile = pickle.load( open( "character.p", "rb" ))
 
 except:
@@ -104,6 +104,7 @@ def newPlayer():
 		else:
 			print('Unless you are an elf or dwarf this isn''t the adventure for you!')
 			exit()		  	
+
 		
 def loadPlayer():
 
@@ -174,7 +175,7 @@ def gameAdmin(playerName):
 		gameAdmin(playerName)
 		
 		
-	elif adminChoice ==3:
+	elif adminChoice ==3: #list existing monsters
 		m = list(monsters.keys())
 		m.sort()
 		print(m)
@@ -210,7 +211,104 @@ def createMonster():
 	monsters[m]=[mLevel,mHP]
 	
 
+
+def randomMob(playerName):
 	
+	x = playerName
+	
+	playerClass = playerProfile[x][0] 
+	level = playerProfile[x][1] 
+	hp = playerProfile[x][2]
+	gold = playerProfile[x][3] 
+	strg = playerProfile[x][4]  
+	dext = playerProfile[x][5] 
+	intel = playerProfile[x][6] 
+	wisd = playerProfile[x][7] 
+	charm = playerProfile[x][8]
+	xp = playerProfile[x][9]
+	currentHP = playerProfile[x][10]			
+	
+	m = random.choice(list(monsters.keys()))
+			
+	mob = monsters[m][1]
+
+	numMob = random.randint(1,4)
+	mob = mob * numMob
+	mobXP = mob * numMob
+	playerHP = playerProfile[x][10]
+		
+	playerDamage = random.randint(1,6)
+	mobDamage = random.randint(1,monsters[m][1])
+			
+
+	while True:
+				
+			if mob < 0:
+				print('The',m,'have been defeated!')
+				rewardGold = random.randint(1,10)
+									
+				del playerProfile[x]
+				gold = gold + rewardGold
+				xp = xp + mobXP
+				playerProfile[x] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp, round(playerHP)
+				
+				break
+			elif playerHP < 0:
+				print('You have been killed.')
+				
+				xp = xp - mobXP
+				del playerProfile[x]
+				playerProfile[x] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp, round(playerHP)
+				break
+
+			else:
+				mob = mob - playerDamage
+				print('You did',playerDamage,'damage!')
+				
+				playerHP = playerHP - mobDamage
+				print(m,'did',mobDamage,'damage!')
+			
+		
+
+def enterForrest(playerName):
+
+	x = playerName
+	q = random.randint(1,20)
+	p = ['deer','chicken','beaver','moose','squirrl']
+	animal = random.choice(p)
+	
+		
+	print('You arrise early in the morning and head into the forrest to hunt.')
+	
+	if q >= 17:
+		#no encounters
+		print('You spend an uneventuful day hunting.)')
+		mainMenu(x)
+	elif q < 17 and q >= 13:
+		#animal encounter
+		print('Not log after entering the forrest you head a twig snap and a sound\
+		coming from the woods around you.  You aren''t alone.  You brace yourself for \
+		attack knowing that some foul creatures inhabit this forrest.  Just as you are about\
+		to flee a',animal,'runs right past you.  You are so statled that you forget to shoot at it.\
+		You decide to head back home empty handed.')
+		mainMenu(x) 
+	elif q < 13 and q >= 2:
+		#monster encounter
+		print('Not log after entering the forrest you head a twig snap and a sound\
+		coming from the woods around you.  You aren''t alone.  You brace yourself for \
+		attack knowing that some foul creatures inhabit this forrest.')
+		randomMob(x)
+		mainMenu(x)
+		
+	elif q == 1:
+		#fatal hunting accident.
+		print('You have a fatal hunting accident and die.')
+		mainMenu(x)
+		
+
+
+
+
 def fightRats(playerName):
 	
 	x = playerName
@@ -238,14 +336,15 @@ def fightRats(playerName):
 		print('Excellent!  Some of those jokers are pretty big!  Take this old sword some drunk fool left \
 		as payment for his tab.  If you make it out I might have a gold piece for you as well.')
 		
-		m = 'Rat'
+		m =  'Rat'
 		
 		rats = monsters[m][1]
-		
+
+				
 		numRats = random.randint(1,5)
 		rats = rats * numRats
 		ratsXP = rats * numRats
-		playerHP = playerProfile[x][2]
+		playerHP = playerProfile[x][10]
 		
 		playerDamage = random.randint(1,6)
 		ratsDamage = random.randint(1,3)
@@ -288,8 +387,7 @@ def fightRats(playerName):
 					
 					playerHP = playerHP - ratsDamage
 					print('Rats did',ratsDamage,'damage!')
-				
-		
+						
 	else:
 		print('That is tough luck! cya!')
 	
@@ -301,7 +399,7 @@ def enterTavern(playerName):
 	x = playerName
 	
 	print('You walk throuh the door of the Shady Oak tavern and notice that the place is \
-almost empty.  The fire in the hearth has mostly gone out and the only sources of light \
+		   almost empty.  The fire in the hearth has mostly gone out and the only sources of light \
 are a greasy oil lap close to the bar and the small amount of light coming through the door\
 and the filthy windows.  You walk up to the bar and knock three times.')
 	print('	After a minute or so the tavern owner comes out from the back and looks up up and down \
@@ -438,45 +536,53 @@ def mainMenu(playerName):
 	actionChoice = input('What would you like to do today? (1-9)')
 	
 	actionChoice = int(actionChoice)
+
 	
-	if actionChoice == 1:
-		enterTavern(playerName)
-		mainMenu(playerName)
+	playerXP = playerProfile[playerName][10]
 	
-	elif actionChoice == 2:
-		print('You enter the forrest.')
-		mainMenu(playerName)
-		
-	elif actionChoice == 3:
-		print('You ask around about bounties')
-		mainMenu(playerName)
-	
-	elif actionChoice == 4:
-		#print('You visit a healer.')
+	if playerXP <= 0:
+		print('You must be healed before continuing ...')
 		visitHealer(playerName)
+	else:		
+		if actionChoice == 1:
+			enterTavern(playerName)
+			mainMenu(playerName)
 		
-	elif actionChoice == 5:
-		showStats(playerName)
-		mainMenu(playerName)
-	
-	elif actionChoice == 6:
-		pickle.dump( playerProfile, open( "character.p","wb") )	
-		print('Saving adventurer data.')
-		mainMenu(playerName)
+		elif actionChoice == 2:
+			#print('You enter the forrest.')
+			enterForrest(playerName)
+			mainMenu(playerName)
+			
+		elif actionChoice == 3:
+			print('You ask around about bounties')
+			mainMenu(playerName)
 		
-	elif actionChoice == 7:
-		gameAdmin(playerName)
+		elif actionChoice == 4:
+			#print('You visit a healer.')
+			visitHealer(playerName)
+			
+		elif actionChoice == 5:
+			showStats(playerName)
+			mainMenu(playerName)
 		
-	elif actionChoice == 8:
-		updateLevel(playerName) 		
-	
-	elif actionChoice == 9:
-		pickle.dump( playerProfile, open( "character.p","wb") )	
-		print('Saving adventurer data.')
-		exit()
+		elif actionChoice == 6:
+			pickle.dump( playerProfile, open( "character.p","wb") )	
+			print('Saving adventurer data.')
+			mainMenu(playerName)
+			
+		elif actionChoice == 7:
+			gameAdmin(playerName)
+			
+		elif actionChoice == 8:
+			updateLevel(playerName) 		
 		
-	else:
-		print('Invalid selection.')			 	
+		elif actionChoice == 9:
+			pickle.dump( playerProfile, open( "character.p","wb") )	
+			print('Saving adventurer data.')
+			exit()
+			
+		else:
+			print('Invalid selection.')			 	
 	
 
 def main():
