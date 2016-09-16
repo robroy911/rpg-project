@@ -34,7 +34,7 @@ except:
 #todo: Hit points calculation --done
 #todo: visit a healer module --done. 
 #idea. Game could support multiple users.  Into screen asks if new player or not. If nnot, load player from list of names // done.
-#todo: need to figure out leveling and adding hp for new level.
+#todo: need to figure out leveling and adding hp for new level. --done.
 #todo: gold and reward calculation --added gold to tavern rats
 #idea. Adding an adventure module system.  Can't play a module until level is reached.
 #idea. Module replayability.  Create random monster generator module.
@@ -60,7 +60,7 @@ def rollStats(playerName):
 	intel = random.randint(1,18)
 	wisd = random.randint(1,18)
 	charm = random.randint(1,18)
-	level = 1
+	level = 0
 	gold = 1
 	hp = strg + dext + intel + wisd + charm / 2
 	xp = 0
@@ -131,7 +131,6 @@ def showStats(playerName):
 	charm = playerProfile[x][8]
 	xp = playerProfile[x][9]
 	currentHP = playerProfile[x][10]	
-	 
 	
 	print('Name:',x,'\nClass:',playerClass,'\nLevel:',level,'\nXP:',xp,'\nHP:',hp,'\nCurrent hp:',currentHP,'\nGold:',gold,'\nStrength:',strg,'\nDexterity:',dext,'\nIntel:',intel,'\nWisdom:',wisd,'\nCharisma:',charm)
 	
@@ -381,6 +380,41 @@ def visitHealer(playerName):
 		mainMenu(x)		
 
 
+def updateLevel(playerName):
+	
+	x = playerName
+	
+	playerClass = playerProfile[x][0] 
+	level = playerProfile[x][1] 
+	hp = playerProfile[x][2]
+	gold = playerProfile[x][3] 
+	strg = playerProfile[x][4]  
+	dext = playerProfile[x][5] 
+	intel = playerProfile[x][6] 
+	wisd = playerProfile[x][7] 
+	charm = playerProfile[x][8]
+	xp = playerProfile[x][9]
+	currentHP = playerProfile[x][10]	
+	
+
+	currentLevel = playerProfile[x][1]
+	newLevel = xp / 1000
+	
+	
+	if currentLevel > newLevel:
+		print('No level increase has been earned.')
+	
+	elif currentLevel < newLevel:
+	
+		level = level + 1
+		newLevelXP = hp + random.randint(1,20)
+		
+		del playerProfile[x]
+			
+		playerProfile[x] = playerClass, level, round(newLevelXP), gold, strg, dext, intel, wisd, charm, xp, round(currentHP)
+							
+	mainMenu(x)			   
+
 
 					
 def mainMenu(playerName):
@@ -396,16 +430,16 @@ def mainMenu(playerName):
 	print('[5] Player Stats.')
 	print('[6] Save game.')
 	print('[7] Game Admin')
-	print('[8] Exit game.')
+	print('[8] Level Up.')
+	print('[9] Exit game.')
 			
 	print('--------------------------')	
 	
-	actionChoice = input('What would you like to do today? (1-8)')
+	actionChoice = input('What would you like to do today? (1-9)')
 	
 	actionChoice = int(actionChoice)
 	
 	if actionChoice == 1:
-		#print('You enter the tavern.')
 		enterTavern(playerName)
 		mainMenu(playerName)
 	
@@ -431,9 +465,12 @@ def mainMenu(playerName):
 		mainMenu(playerName)
 		
 	elif actionChoice == 7:
-		gameAdmin(playerName)	
-	
+		gameAdmin(playerName)
+		
 	elif actionChoice == 8:
+		updateLevel(playerName) 		
+	
+	elif actionChoice == 9:
 		pickle.dump( playerProfile, open( "character.p","wb") )	
 		print('Saving adventurer data.')
 		exit()
