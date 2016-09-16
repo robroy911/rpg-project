@@ -115,27 +115,7 @@ def loadPlayer():
 		else:
 			'Invalid Character.  Returning to start ...'
 
-'''
-def loadStats(playerName):
-	x = playerName
-	
-	playerClass = playerProfile[x][0] 
-	level = playerProfile[x][1] 
-	hp = playerProfile[x][2]
-	gold = playerProfile[x][3] 
-	strg = playerProfile[x][4]  
-	dext = playerProfile[x][5] 
-	intel = playerProfile[x][6] 
-	wisd = playerProfile[x][7] 
-	charm = playerProfile[x][8]
-	xp = playerProfile[x][9]
-	currentHP = playerProfile[x][10]
-	
-	#print('Name:',x,'Class:',playerClass,'Level:',level,'HP:',hp,'Strength:',strg,'Dexterity:',dext,'Intel:',intel,'Wisdom:',wisd,'Charisma:',charm)
-	
-	#print (playerProfile[x][0]) #lists items from playerProfile
-	#mainMenu(x)		
-'''
+
 
 def showStats(playerName):
 	x = playerName
