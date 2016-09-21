@@ -268,13 +268,37 @@ def randomMob(playerName):
 				playerHP = playerHP - mobDamage
 				print(m,'did',mobDamage,'damage!')
 			
-		
+
+def huntingAccident(playerName):
+	
+	x = playerName
+	
+	playerClass = playerProfile[x][0] 
+	level = playerProfile[x][1] 
+	hp = playerProfile[x][2]
+	gold = playerProfile[x][3] 
+	strg = playerProfile[x][4]  
+	dext = playerProfile[x][5] 
+	intel = playerProfile[x][6] 
+	wisd = playerProfile[x][7] 
+	charm = playerProfile[x][8]
+	xp = playerProfile[x][9]
+	currentHP = playerProfile[x][10]
+	
+	PlayerXP = playerProfile[x][9]
+	
+	deathPenaltyXP = PlayerXP - 100
+	
+	del playerProfile[x]
+	playerProfile[x] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, deathPenaltyXP, round(0)
+				
+
 
 def enterForrest(playerName):
 
 	x = playerName
 	q = random.randint(1,20)
-	p = ['deer','chicken','beaver','moose','squirrl']
+	p = ['deer','chicken','beaver','moose','squirrl','owl','bobcat','chipmunk','hedgehog']
 	animal = random.choice(p)
 	
 		
@@ -301,13 +325,10 @@ def enterForrest(playerName):
 		mainMenu(x)
 		
 	elif q == 1:
-		#fatal hunting accident.
+		huntingAccident(x)
 		print('You have a fatal hunting accident and die.')
 		mainMenu(x)
 		
-
-
-
 
 def fightRats(playerName):
 	
@@ -356,8 +377,6 @@ def fightRats(playerName):
 		',numRats,'very large rats digging though sacks of grain and bags of rotten fruit.  One of them stops and sniffs the air and growls\
 		in a way no rodent you have ever seen before growls.  In unison they turn and head in your direction.')
 		
-		#figure out battle part
-
 
 		while True:
 				
@@ -406,10 +425,13 @@ and the filthy windows.  You walk up to the bar and knock three times.')
 with a sneer.  "Where the hell did you come from?"  Can''t you tell we are closed for business?!')
 	
 	print('What would you like to do:')
+	print('------------------------')
 	print('[1] Ask for a drink.')
 	print('[2] Ask for some food?)')
 	print('[3] Ask where all the customers are.')
 	print('[4] Exit the Tavern.')
+	print('------------------------')
+	
 	
 	act1 = input('Choose [1-4]')
 	act1 = int(act1)
@@ -466,8 +488,7 @@ def visitHealer(playerName):
 			del playerProfile[x]
 			
 			playerProfile[x] = playerClass, level, round(hp), gold, strg, dext, intel, wisd, charm, xp, round(playerHP)
-					
-			
+						
 		else:
 			print('Sorry, come back when you are a little less cheap!')
 			mainMenu(x)
@@ -494,7 +515,6 @@ def updateLevel(playerName):
 	xp = playerProfile[x][9]
 	currentHP = playerProfile[x][10]	
 	
-
 	currentLevel = playerProfile[x][1]
 	newLevel = xp / 1000
 	
@@ -514,7 +534,111 @@ def updateLevel(playerName):
 	mainMenu(x)			   
 
 
-					
+def millersDaughter(playerName):
+	print('You decide to looking into the kidnapping of the millers daughter.')
+	
+def thievesForrest(playerName):
+	print('You decide to help tame the thieves forrest.')
+	
+def silverTooth(playerName):
+	print('You have decided to hunt down ole silvertooth.')
+
+def hauntedMine(playerName):
+	
+	x = playerName
+	
+	print('The local mine has been a constant source of wealth for the community for many, many years.\
+	while not the only source of income, it has been a staple until recently.  Workers have become more and more \
+	fearful that somehting other worldly is enhabiting the mines.  As with all mines, this mine has seen it''s fair share of tragedy.\
+	There are well marked tunnles deep in the mine that have never been fully explored and more than a few miners have gone missing down\
+	those unexplored corridors.\
+	\
+	Rumor has it that even a rescurer or two has gone down to help finder lost miners and never returned.')
+	print('------------------------')
+	mineChoice = input('Investigate the haunted mine? (y/n)')
+	
+	if mineChoice =='y' or mineChoice =='Y':
+		print('Start mine adventure.')
+		
+	else:
+		print('You big chicken!!! ... Returning to main menu.')
+		mainMenu(x)	
+	
+	
+	
+def rumorMill():
+	p = ['The blacksmith''s son has''t been seen since the millers daughter went missing.',
+		 'I hear that the mine is haunted.  Voices are always echoing around, even after everyone is gone.',
+		 'Someone has been stealing the lord''s horses again!  I bet they are all over in the thieves forrest.',
+		 'The harvest this year had better be better than the last.  If not, we all might starve this winter.',
+		 'Someone said the Shady Oak is back in business.  Wonder if it'' cleaner in there now>?',
+		 'Someone needs to kill silvertooth once and for all.  We can;t keep loosing our livestock to that beast!',
+		 'It''s hardly safe to go into the forrest to hunt these days.  You never know what kind of monsters are lurking there!'
+		 ]
+	
+	rumor = random.choice(p)
+	
+	print(rumor)			
+	
+
+
+
+
+def checkBounties(playerName):
+	
+	x = playerName
+	
+	print('You enter the local constables office and see a list of bounties.')
+	print('------------------------')
+	print('[1] Millers daughter kidnapped.')
+	print('[2] Thieves forrest.')
+	print('[3] Kill ole silvertooth.')
+	print('[4] The Haunted mine.')
+	print('[5] Ask about rumors.')
+	print('[6] Leave the office.')
+	print('------------------------')
+
+	bountyChoice = input('What would you like to do?')
+	bountyChoice = int(bountyChoice)
+	
+	
+	if bountyChoice == 1:
+		
+		millersDaughter(x)
+		mainMenu(x)	
+		
+	elif bountyChoice == 2:
+		
+		thievesForrest(x)
+		mainMenu(x)	
+		
+		
+	elif bountyChoice == 3:
+		
+		silverTooth(x)
+		mainMenu(x)	
+		
+	elif bountyChoice == 4:
+		
+		hauntedMine(x)
+		mainMenu(x)	
+			
+		
+	elif bountyChoice == 5:
+		
+		rumorMill()
+		mainMenu(x)		
+		
+	elif bountyChoice == 6:
+		
+		mainMenu(x)	
+		
+	else:
+		print('We didn''t understand that.  Get out!')
+		mainMenu(x)									
+	
+	
+				
 def mainMenu(playerName):
 
 	playerName = playerName
@@ -549,16 +673,16 @@ def mainMenu(playerName):
 			mainMenu(playerName)
 		
 		elif actionChoice == 2:
-			#print('You enter the forrest.')
+			
 			enterForrest(playerName)
 			mainMenu(playerName)
 			
 		elif actionChoice == 3:
-			print('You ask around about bounties')
+			checkBounties(playerName)
 			mainMenu(playerName)
 		
 		elif actionChoice == 4:
-			#print('You visit a healer.')
+
 			visitHealer(playerName)
 			
 		elif actionChoice == 5:
