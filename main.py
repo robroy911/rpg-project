@@ -33,9 +33,9 @@ except:
 
 #todo: Hit points calculation --done
 #todo: visit a healer module --done. 
-#idea. Game could support multiple users.  Into screen asks if new player or not. If nnot, load player from list of names // done.
+#idea. Game could support multiple users.  Into screen asks if new player or not. If not, load player from list of names // done.
 #todo: need to figure out leveling and adding hp for new level. --done.
-#todo: gold and reward calculation --added gold to tavern rats
+#todo: gold and reward calculation --gold added as reward for quests
 #idea. Adding an adventure module system.  Can't play a module until level is reached.
 #idea. Module replayability.  Create random monster generator module.
 
